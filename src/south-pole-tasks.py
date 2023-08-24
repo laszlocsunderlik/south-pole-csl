@@ -2,7 +2,7 @@ import sys
 import ee
 
 # Initialize Earth Engine
-service_account_key_file = "../south-pole-csl-396609-140ecba9262a.json"
+service_account_key_file = "south-pole-csl-396609-140ecba9262a.json"
 ee.Initialize(ee.ServiceAccountCredentials(None, key_file=service_account_key_file))
 
 

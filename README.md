@@ -9,7 +9,7 @@ This guide provides step-by-step instructions on how to build and run the script
 
 - Docker installed on your system.
 - You need to create your own service account from Earth Engine and save it in src folder. 
-See: https://github.com/laszlocsunderlik/south-pole-csl/blob/master/earth-engine-config-auth-example.json
+See: https://github.com/laszlocsunderlik/south-pole-csl/blob/master/src/earth-engine-config-auth-example.json
 Follow this link: https://developers.google.com/earth-engine/guides/service_account
 
 ## Building the Docker Image
