@@ -8,6 +8,8 @@ This guide provides step-by-step instructions on how to build and run the script
 ## Prerequisites
 
 - Docker installed on your system.
+- You need to create your own service account from Earth Engine and save it in your root. 
+Follow this link: https://developers.google.com/earth-engine/guides/service_account
 
 ## Building the Docker Image
 
