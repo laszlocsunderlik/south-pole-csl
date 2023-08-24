@@ -16,4 +16,4 @@ ENV NUMBA_CACHE_DIR=/numba_cache
 COPY ./src ./
 
 # default entrypoint to run the script
-ENTRYPOINT ["python", "south-pole-tasks.py"]
+ENTRYPOINT ["python", "-u", "south-pole-tasks.py"]

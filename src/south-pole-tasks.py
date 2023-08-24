@@ -71,7 +71,7 @@ def stable_forest(image: ee.Image) -> None:
         .And(image.select("gain").eq(0))
         .And(image.select("loss").eq(0))
     )
-    print(Fore.YELLOW + "Calculating Stable Forest Area...")
+    print(Fore.YELLOW + "Calculating stable forest area...")
     stable_forest_area = hansen_select.multiply(ee.Image.pixelArea()).reduceRegion(
         reducer=ee.Reducer.sum(),
         scale=30,
@@ -79,7 +79,7 @@ def stable_forest(image: ee.Image) -> None:
     ).get("treecover2000")
 
     stable_forest_area_sqkm = ee.Number(stable_forest_area).divide(1e6)
-    print(Fore.GREEN + "Stable Forest Area in (km²) between 2000 and 2022:", stable_forest_area_sqkm.getInfo())
+    print(Fore.GREEN + "Stable forest area in (km²) between 2000 and 2022:", stable_forest_area_sqkm.getInfo())
 
 
 def deforestation(image: ee.Image) -> None:
@@ -103,7 +103,7 @@ def deforestation(image: ee.Image) -> None:
     ).get("treecover2000")
 
     deforested_area_sqkm = ee.Number(deforested_area_m2).divide(1e6)
-    print(Fore.GREEN + "Deforested Area in (km²) between 2000 and 2022:", deforested_area_sqkm.getInfo())
+    print(Fore.GREEN + "Deforested area in (km²) between 2000 and 2022:", deforested_area_sqkm.getInfo())
 
 
 def deforestation_rate(image: ee.Image, country: dict) -> None:
