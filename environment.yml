@@ -1,0 +1,7 @@
+name: south-pole
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.9.13
+  - earthengine-api=0.1.364
