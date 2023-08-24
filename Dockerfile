@@ -13,8 +13,7 @@ WORKDIR /app
 # make a writable dir for numba to use... see https://github.com/numba/numba/issues/4032#issuecomment-547088606
 RUN mkdir /numba_cache && chmod -R g+w /numba_cache
 ENV NUMBA_CACHE_DIR=/numba_cache
-#COPY ./setup.cfg ./
-COPY ./src ./src
+COPY ./src ./
 
-# default entrypoint to run the production artifact
-ENTRYPOINT ["python", "south-pole-tasks"]
+# default entrypoint to run the script
+ENTRYPOINT ["python", "south-pole-tasks.py"]
