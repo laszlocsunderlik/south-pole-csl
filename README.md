@@ -25,11 +25,11 @@ docker build -t "your_build_name" .
 
 Once the Docker image is built, you can run the script using the following command:
 ```
-docker run -it --rm "your_build_name" python south-pole-tasks.py "arg1_value"
+docker run "your_build_name" "arg1_value"
 ```
 
 If you need help to understand the argument:
 ```
-docker run -it --rm "your_build_name" python south-pole-tasks.py --help
+docker run "your_build_name" --help
 ```
 

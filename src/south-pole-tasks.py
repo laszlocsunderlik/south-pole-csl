@@ -204,7 +204,7 @@ def main(country_name: int) -> None:
 if __name__ == "__main__":
     if len(sys.argv) != 2 or sys.argv[1] == "--help":
         print("Usage: python script_name.py <FAO Gaul Code>")
-        print("Example: python data-acquisition-ee-v2.py 113")
+        print("Example: python south-pole-tasks.py 113")
         print("The FAO Gaul Code corresponds to the desired country.")
         sys.exit(1)
 
