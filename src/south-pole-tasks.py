@@ -1,5 +1,6 @@
 import sys
 import ee
+from colorama import Fore
 
 # Initialize Earth Engine
 service_account_key_file = "south-pole-csl-396609-140ecba9262a.json"
@@ -14,6 +15,7 @@ def get_country_boundary(gaul_code: int) -> dict:
     :return: National boundaries in GeoJson.
     """
     countries = ee.FeatureCollection("FAO/GAUL/2015/level0")
+    print(Fore.WHITE + "Obtain Global Administrative Unit Layers 2015, Country Boundaries")
     country = countries.filter(ee.Filter.eq('ADM0_CODE', gaul_code))
     country_geom = country.geometry()
     return country_geom.getInfo()
@@ -27,6 +29,7 @@ def get_admin_units(gaul_code: int) -> dict:
     :return: Sub-nation boundaries.
     """
     admin_units = ee.FeatureCollection("FAO/GAUL/2015/level1")
+    print(Fore.WHITE + "Obtain Global Administrative Unit Layers 2015, First-Level Administrative Units")
     admin_unit = admin_units.filter(ee.Filter.eq("ADM0_CODE", gaul_code))
     country_geom = admin_unit.geometry()
     return country_geom.getInfo()
@@ -38,6 +41,7 @@ def get_hansen() -> ee.Image:
     Landsat images in characterizing global forest extent and change.
     :return: Global Hansen dataset.
     """
+    print(Fore.WHITE + "Obtain Hansen Global Forest Change v1.10 (2000-2022)")
     return ee.Image("UMD/hansen/global_forest_change_2022_v1_10")
 
 
@@ -49,6 +53,7 @@ def clip_raster_with_boundary(forest_change: ee.Image, country: dict) -> ee.Imag
     :return: ee.Image object. The output bands correspond exactly to the input bands, except data not covered by the
     geometry is masked. The output image retains the metadata of the input image.
     """
+    print(Fore.YELLOW + "Clip the Hansen dataset with boundaries")
     return forest_change.clip(country)
 
 
@@ -66,7 +71,7 @@ def stable_forest(image: ee.Image) -> None:
         .And(image.select("gain").eq(0))
         .And(image.select("loss").eq(0))
     )
-
+    print(Fore.YELLOW + "Calculating Stable Forest Area...")
     stable_forest_area = hansen_select.multiply(ee.Image.pixelArea()).reduceRegion(
         reducer=ee.Reducer.sum(),
         scale=30,
@@ -74,7 +79,7 @@ def stable_forest(image: ee.Image) -> None:
     ).get("treecover2000")
 
     stable_forest_area_sqkm = ee.Number(stable_forest_area).divide(1e6)
-    print("Stable Forest Area in (km²) between 2000 and 2022:", stable_forest_area_sqkm.getInfo())
+    print(Fore.GREEN + "Stable Forest Area in (km²) between 2000 and 2022:", stable_forest_area_sqkm.getInfo())
 
 
 def deforestation(image: ee.Image) -> None:
@@ -90,7 +95,7 @@ def deforestation(image: ee.Image) -> None:
         image.select("treecover2000").gt(10)
         .And(image.select("loss").eq(1))
     )
-
+    print(Fore.YELLOW + "Calculating deforested regions...")
     deforested_area_m2 = deforested_regions.multiply(ee.Image.pixelArea()).reduceRegion(
         reducer=ee.Reducer.sum(),
         scale=30,
@@ -98,7 +103,7 @@ def deforestation(image: ee.Image) -> None:
     ).get("treecover2000")
 
     deforested_area_sqkm = ee.Number(deforested_area_m2).divide(1e6)
-    print("Deforested Area in (km²) between 2000 and 2022:", deforested_area_sqkm.getInfo())
+    print(Fore.GREEN + "Deforested Area in (km²) between 2000 and 2022:", deforested_area_sqkm.getInfo())
 
 
 def deforestation_rate(image: ee.Image, country: dict) -> None:
@@ -121,7 +126,7 @@ def deforestation_rate(image: ee.Image, country: dict) -> None:
         maxPixels=1e13
     ).get('lossyear')
     years = unique_years.getInfo()
-
+    print(Fore.YELLOW + "Calculating deforestation rate...")
     sorted_unique_years = keys_integer(years)
     index_loss_sum = {}
     for year in sorted_unique_years:
@@ -137,9 +142,9 @@ def deforestation_rate(image: ee.Image, country: dict) -> None:
     year_loss_sum = year_mapping(index_loss_sum)
     yearly_rate = rate_calc(year_loss_sum)
 
-    print(f"Deforestation rate based on previous year: {yearly_rate}")
+    print(Fore.GREEN + f"Deforestation rate based on previous year: {yearly_rate}")
     highest_key, highest_value = max(yearly_rate.items(), key=lambda x: x[1])
-    print(f"Highest rate is {highest_value} at {highest_key}")
+    print(Fore.GREEN + f"Highest rate is {highest_value} at {highest_key}")
 
 
 def keys_integer(years: dict) -> dict:
@@ -203,9 +208,9 @@ def main(country_name: int) -> None:
 
 if __name__ == "__main__":
     if len(sys.argv) != 2 or sys.argv[1] == "--help":
-        print("Usage: python script_name.py <FAO Gaul Code>")
-        print("Example: python south-pole-tasks.py 113")
-        print("The FAO Gaul Code corresponds to the desired country.")
+        print(Fore.BLUE + "Usage: python script_name.py <FAO Gaul Code>")
+        print(Fore.BLUE + "Example: python south-pole-tasks.py 113")
+        print(Fore.BLUE + "The FAO Gaul Code corresponds to the desired country.")
         sys.exit(1)
 
     country_name = int(sys.argv[1])
